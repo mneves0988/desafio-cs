@@ -1,0 +1,97 @@
+name: contato-seguro-ai
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Configure POSTGRES_USER no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Configure POSTGRES_DB no .env}
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres_delivery_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  db-migrate:
+    image: postgres:16-alpine
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER:?Configure POSTGRES_USER no .env}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD no .env}
+      PGDATABASE: ${POSTGRES_DB:?Configure POSTGRES_DB no .env}
+    volumes:
+      - ./infra/db:/migrations:ro
+      - ./infra/docker-init:/docker-init:ro
+    command:
+      - sh
+      - -ec
+      - |
+        psql -v ON_ERROR_STOP=1 -f /docker-init/000_local_roles.sql
+        for f in /migrations/[0-9][0-9][0-9]_*.sql; do
+          echo "Aplicando migracao: $$(basename "$$f")"
+          psql -v ON_ERROR_STOP=1 -f "$$f"
+        done
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  order-api:
+    build:
+      context: .
+      dockerfile: apps/order-api/Dockerfile
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:?Configure POSTGRES_USER}:${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:?Configure POSTGRES_DB}
+      DEMO_ACCESS_TOKEN: ${DEMO_ACCESS_TOKEN:?Configure DEMO_ACCESS_TOKEN no .env}
+      CANCEL_CONFIRMATION_SECRET: ${CANCEL_CONFIRMATION_SECRET:?Configure CANCEL_CONFIRMATION_SECRET no .env}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: "no"
+
+  agent-service:
+    build:
+      context: .
+      dockerfile: apps/agent-service/Dockerfile
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://${POSTGRES_USER:?Configure POSTGRES_USER}:${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:?Configure POSTGRES_DB}
+      ORDER_API_URL: http://order-api:3000
+      DEMO_ACCESS_TOKEN: ${DEMO_ACCESS_TOKEN:?Configure DEMO_ACCESS_TOKEN no .env}
+      CANCEL_CONFIRMATION_SECRET: ${CANCEL_CONFIRMATION_SECRET:?Configure CANCEL_CONFIRMATION_SECRET no .env}
+      AGENT_HTTP_TOKEN: ${AGENT_HTTP_TOKEN:?Configure AGENT_HTTP_TOKEN no .env}
+      AGENT_HTTP_PORT: 3001
+      AGENT_HTTP_HOST: 0.0.0.0
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:?Configure OPENROUTER_API_KEY no .env}
+      OPENROUTER_MODEL_MAIN: ${OPENROUTER_MODEL_MAIN:-google/gemma-4-26b-a4b-it}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+    ports:
+      - "127.0.0.1:3001:3001"
+    depends_on:
+      order-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: "no"
+
+volumes:
+  postgres_delivery_data:

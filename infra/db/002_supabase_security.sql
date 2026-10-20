@@ -1,0 +1,5 @@
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+
+REVOKE ALL PRIVILEGES
+ON TABLE public.orders
+FROM PUBLIC, anon, authenticated;

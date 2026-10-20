@@ -1,0 +1,12 @@
+{
+  "name": "contato-seguro-ai",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:order": "npm run dev -w @contato-seguro/order-api",
+    "build:order": "npm run build -w @contato-seguro/order-api"
+  }
+}
