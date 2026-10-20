@@ -78,8 +78,8 @@ O comando `SELECT COUNT(*) AS total_encaminhamentos FROM public.agent_handoff_re
 
 ## 7. Limitações e verificação final ainda pendente
 
-- **Instalação limpa da versão final:** o clone independente anterior contemplava uma versão mais antiga. Ainda é necessário copiar/clonar a versão consolidada, executar `npm ci`, builds, testes e Docker com configuração de demonstração, antes de afirmar que um terceiro pode reproduzi-la integralmente.
+- **Instalação limpa da versão final:** cópia independente com 80 arquivos, sem .env e sem histórico Git; npm ci sem vulnerabilidades reportadas, dois builds e 162/162 testes aprovados em 20/10/2026. Docker validado no projeto original, não repetido nessa cópia.
 - **Memória após reinício:** o armazenamento em PostgreSQL com TTL de 24 horas e testes automatizados estão presentes; não há log neste conjunto comprovando explicitamente o teste manual após reiniciar o container e depois recuperar a referência no Telegram.
 - **Telegram:** foi observado um `telegram.poll_failed` com `TypeError` em uma execução anterior. O endpoint `getMe` respondeu 200 e a consulta posterior funcionou; o recorte curto de logs não constitui garantia de estabilidade prolongada.
 - **Segurança:** os canais representam uma única identidade fictícia compartilhada, sem autenticação de clientes reais. A fila humana é demonstrativa e não aciona pessoas. Não publicar APIs de demonstração com tokens compartilhados em endereço externo.
-- **Publicação:** o link definitivo do novo repositório GitHub precisa ser preenchido após revisão de segredos e envio manual do código; a PR do repositório antigo não integra a entrega.
+- **Publicação:** código e documentação publicados em https://github.com/mneves0988/desafio-cs com histórico independente. Repositório privado até a liberação de acesso ao avaliador.

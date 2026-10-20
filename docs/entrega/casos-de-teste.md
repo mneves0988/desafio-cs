@@ -1,6 +1,6 @@
 # Matriz obrigatoria de casos de teste
 
-Os testes automatizados complementam, mas **não substituem**, a descrição de objetivo, cenário, pré-condições e resultado esperado. Em 20/10/2026, foram **162/162 testes aprovados** na versão atual: 16 na Order API e 146 no Agent Service. O Docker local, as seis migrações SQL, a Swagger UI e o handoff no Telegram também foram validados. Uma instalação limpa desta versão final ainda está pendente.
+Os testes automatizados complementam, mas **não substituem**, a descrição de objetivo, cenário, pré-condições e resultado esperado. Em 20/10/2026, foram **162/162 testes aprovados** na versão atual: 16 na Order API e 146 no Agent Service. O Docker local, as seis migrações SQL, a Swagger UI e o handoff no Telegram também foram validados. A versão final passou em instalação limpa com npm ci, builds e 162 testes.
 
 ## Order API: `apps/order-api/tests/orders.test.ts`
 

@@ -57,7 +57,7 @@ npm.cmd run test -w @contato-seguro/agent-service
 
 **Validação em 20/10/2026:** **162/162 testes aprovados**, sendo 16 na Order API (2 arquivos de teste) e 146 no Agent Service (12 arquivos de teste). Os builds TypeScript dos dois serviços foram aprovados. Em execução local com Docker Desktop, `postgres`, `order-api` e `agent-service` ficaram `healthy`; o `db-migrate` terminou com código zero e aplicou as migrações `001` a `006`. Foram verificados consultas de pedido e produto, atendimento pelo Telegram e encaminhamento humano registrado no PostgreSQL. A Order API também teve o OpenAPI e o Swagger UI verificados em execução, inclusive o parâmetro obrigatório `X-Cancel-Confirmation`.
 
-O histórico anterior de 107 e 124 testes permanece descrito apenas para rastreabilidade em [evidências de validação](docs/entrega/evidencias-validacao.md). **Ainda falta repetir o teste de instalação em uma cópia limpa da versão final**, já que o clone limpo anteriormente aprovado continha uma versão anterior do código.
+O histórico anterior de 107 e 124 testes permanece descrito apenas para rastreabilidade em [evidências de validação](docs/entrega/evidencias-validacao.md). **Instalação limpa validada em 20/10/2026:** npm ci sem vulnerabilidades reportadas, ambos os builds e 162/162 testes aprovados. O Docker foi validado no projeto original.
 
 ## Encaminhamento humano (fila interna simulada)
 

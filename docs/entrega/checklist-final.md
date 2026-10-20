@@ -16,7 +16,7 @@
 | Casos de teste com objetivo/cenario/pre-condicoes/esperado | `docs/entrega/casos-de-teste.md` | Documentado; 162/162 testes aprovados (16 Order API + 146 Agent Service) |
 | Logs estruturados e exemplos | `docs/entrega/logs.md` e `observabilidade-google-cloud.md` | Validado local e com amostra no Cloud Logging |
 | Decisoes e limitacoes | `docs/entrega/arquitetura-e-decisoes.md`, README | Documentado |
-| Link GitHub acessivel ao avaliador | README | **Pendente:** publicar repositório novo e inserir URL definitiva |
+| Link GitHub acessivel ao avaliador | README | Código publicado em https://github.com/mneves0988/desafio-cs; falta liberar acesso |
 
 ## Pontos para checagem antes do envio
 
@@ -26,8 +26,8 @@
 4. `docker compose config --quiet`, `docker compose up --build -d`, `docker compose ps`, e `docker compose ps -a db-migrate`. Nao e preciso resetar o volume.
 5. Swagger UI, OpenAPI e header obrigatório já validados localmente; repetir, no teste limpo, consulta autenticada no mock HTTP. Testar cancelamento positivo apenas em pedido fictício descartável.
 6. Validar por amostragem que `git grep` nao apresenta tokens, senhas nem strings reais de `DATABASE_URL` dentro dos arquivos versionados; nao imprimir segredos no terminal compartilhado.
-7. **Pendente:** validar a versão final em cópia/clone limpo, gerando `.env` de teste separadamente, com `npm ci`, builds, 162 testes e Docker. O clone limpo anterior aprovou 107 testes de uma versão antiga, não esta versão final.
-8. **Pendente:** criar repositório novo, sem copiar a pasta `.git` nem a PR anterior, revisar arquivos sensíveis e preencher no README a URL definitiva de acesso ao avaliador.
+7. **Validado:** instalação limpa, npm ci, builds e 162 testes. Docker validado no ambiente original; não repetido na cópia limpa.
+8. **Concluído:** novo repositório criado e publicado manualmente, com histórico independente e auditoria local de credenciais. Liberar acesso ao avaliador.
 
 ## Limites assumidos
 
